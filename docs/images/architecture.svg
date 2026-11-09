@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 910" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="sh"><feDropShadow dx="1" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.12"/></filter>
+  </defs>
+  <rect width="1240" height="910" fill="#ffffff"/>
+  <text x="620.0" y="40" text-anchor="middle" fill="#1a1a2e" font-size="24" font-weight="bold">Report Mailer - Architecture</text>
+  <text x="620.0" y="64" text-anchor="middle" fill="#666" font-size="13">Streamlit schedules · Tasks queue · SPCS renders charts headlessly · native + external email</text>
+  <rect x="470" y="88" width="300" height="52" rx="10" fill="#1B3A6B" filter="url(#sh)"/>
+  <text x="620.0" y="110.0" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Report authors (Snowsight)</text>
+  <text x="620.0" y="128.0" text-anchor="middle" fill="#f0f9ff" font-size="11">role RM_USER</text>
+  <rect x="30" y="168" width="1180" height="470" rx="14" fill="#f7fcfe" stroke="#29b5e8" stroke-width="2" stroke-dasharray="8,5"/>
+  <text x="1192" y="192" text-anchor="end" fill="#0e7fad" font-size="13" font-weight="bold">SNOWFLAKE ACCOUNT  ·  REPORT_MAILER.APP</text>
+  <rect x="60" y="210" width="250" height="170" rx="10" fill="#eaf7fc" stroke="#29b5e8" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="185.0" y="234" text-anchor="middle" fill="#0e7fad" font-size="14" font-weight="bold">Streamlit app</text>
+  <text x="185.0" y="251" text-anchor="middle" fill="#29b5e8" font-size="11">REPORT_MAILER_APP · owner&#x27;s rights</text>
+  <line x1="70" y1="261" x2="300" y2="261" stroke="#29b5e8" stroke-opacity="0.35" stroke-width="1"/>
+  <text x="74" y="280" text-anchor="start" fill="#444" font-size="11">Register HTML / PDF / artifact</text>
+  <text x="74" y="298" text-anchor="start" fill="#444" font-size="11">Schedules + recipients</text>
+  <text x="74" y="316" text-anchor="start" fill="#444" font-size="11">Send now / test to me</text>
+  <text x="74" y="334" text-anchor="start" fill="#444" font-size="11">Run history, admin settings</text>
+  <circle cx="60" cy="210" r="13" fill="#fff" stroke="#29b5e8" stroke-width="2"/>
+  <text x="60" y="214.5" text-anchor="middle" fill="#29b5e8" font-size="12" font-weight="bold">1</text>
+  <rect x="350" y="210" width="250" height="170" rx="10" fill="#f3f0ff" stroke="#7b61ff" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="475.0" y="234" text-anchor="middle" fill="#5a3ec8" font-size="14" font-weight="bold">Metadata</text>
+  <text x="475.0" y="251" text-anchor="middle" fill="#7b61ff" font-size="11">tables + append-only stream</text>
+  <line x1="360" y1="261" x2="590" y2="261" stroke="#7b61ff" stroke-opacity="0.35" stroke-width="1"/>
+  <text x="364" y="280" text-anchor="start" fill="#444" font-size="11">REPORTS · SCHEDULES</text>
+  <text x="364" y="298" text-anchor="start" fill="#444" font-size="11">SCHEDULE_RECIPIENTS</text>
+  <text x="364" y="316" text-anchor="start" fill="#444" font-size="11">RUNS  →  RUNS_STREAM</text>
+  <text x="364" y="334" text-anchor="start" fill="#444" font-size="11">DELIVERY_LOG · APP_CONFIG</text>
+  <circle cx="350" cy="210" r="13" fill="#fff" stroke="#7b61ff" stroke-width="2"/>
+  <text x="350" y="214.5" text-anchor="middle" fill="#7b61ff" font-size="12" font-weight="bold">2</text>
+  <rect x="640" y="210" width="250" height="170" rx="10" fill="#edf9f0" stroke="#00a843" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="765.0" y="234" text-anchor="middle" fill="#007a31" font-size="14" font-weight="bold">Tasks</text>
+  <text x="765.0" y="251" text-anchor="middle" fill="#00a843" font-size="11">warehouse RM_WH</text>
+  <line x1="650" y1="261" x2="880" y2="261" stroke="#00a843" stroke-opacity="0.35" stroke-width="1"/>
+  <text x="654" y="280" text-anchor="start" fill="#444" font-size="11">RM_SCHEDULE_&lt;id&gt;  (CRON)</text>
+  <text x="654" y="298" text-anchor="start" fill="#444" font-size="11">  → ENQUEUE_RUN()</text>
+  <text x="654" y="316" text-anchor="start" fill="#444" font-size="11">RM_DISPATCHER_TASK (stream)</text>
+  <text x="654" y="334" text-anchor="start" fill="#444" font-size="11">  → LAUNCH_QUEUED_RUNS()</text>
+  <circle cx="640" cy="210" r="13" fill="#fff" stroke="#00a843" stroke-width="2"/>
+  <text x="640" y="214.5" text-anchor="middle" fill="#00a843" font-size="12" font-weight="bold">3</text>
+  <rect x="930" y="210" width="250" height="170" rx="10" fill="#fff3ed" stroke="#e8530e" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="1055.0" y="234" text-anchor="middle" fill="#b33f08" font-size="14" font-weight="bold">SPCS render job</text>
+  <text x="1055.0" y="251" text-anchor="middle" fill="#e8530e" font-size="11">compute pool RM_POOL</text>
+  <line x1="940" y1="261" x2="1170" y2="261" stroke="#e8530e" stroke-opacity="0.35" stroke-width="1"/>
+  <text x="944" y="280" text-anchor="start" fill="#444" font-size="11">Headless Chromium (Playwright)</text>
+  <text x="944" y="298" text-anchor="start" fill="#444" font-size="11">Charts → PNG slices + PDF</text>
+  <text x="944" y="316" text-anchor="start" fill="#444" font-size="11">Compose CID / native email</text>
+  <text x="944" y="334" text-anchor="start" fill="#444" font-size="11">Send + log each recipient</text>
+  <circle cx="930" cy="210" r="13" fill="#fff" stroke="#e8530e" stroke-width="2"/>
+  <text x="930" y="214.5" text-anchor="middle" fill="#e8530e" font-size="12" font-weight="bold">4</text>
+  <path d="M470,114 L185,114 L185,210" fill="none" stroke="#1B3A6B" stroke-width="2"/>
+  <polygon points="180,201 190,201 185,210" fill="#1B3A6B"/>
+  <path d="M310,295 L350,295" fill="none" stroke="#29b5e8" stroke-width="2"/>
+  <polygon points="341,290 341,300 350,295" fill="#29b5e8"/>
+  <path d="M600,295 L640,295" fill="none" stroke="#7b61ff" stroke-width="2"/>
+  <polygon points="631,290 631,300 640,295" fill="#7b61ff"/>
+  <path d="M890,295 L930,295" fill="none" stroke="#00a843" stroke-width="2"/>
+  <polygon points="921,290 921,300 930,295" fill="#00a843"/>
+  <rect x="60" y="430" width="340" height="180" rx="10" fill="#eaf7fc" stroke="#29b5e8" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="230.0" y="454" text-anchor="middle" fill="#0e7fad" font-size="14" font-weight="bold">Stages (SNOWFLAKE_SSE)</text>
+  <text x="230.0" y="471" text-anchor="middle" fill="#29b5e8" font-size="11">mounted as SPCS stage volumes</text>
+  <line x1="70" y1="481" x2="390" y2="481" stroke="#29b5e8" stroke-opacity="0.35" stroke-width="1"/>
+  <text x="74" y="500" text-anchor="start" fill="#444" font-size="11">@REPORT_SOURCES  → /mnt/reports  (source of record)</text>
+  <text x="74" y="518" text-anchor="start" fill="#444" font-size="11">@REPORT_OUTPUTS  → /mnt/outputs  (per run id)</text>
+  <text x="74" y="536" text-anchor="start" fill="#444" font-size="11">@RM_SPECS  report_job.yaml template</text>
+  <text x="74" y="554" text-anchor="start" fill="#444" font-size="11">Image repo RM_IMAGES  report-renderer:1.0.0</text>
+  <rect x="440" y="430" width="360" height="180" rx="10" fill="#f3f0ff" stroke="#7b61ff" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="620.0" y="454" text-anchor="middle" fill="#5a3ec8" font-size="14" font-weight="bold">Integrations + secret</text>
+  <text x="620.0" y="471" text-anchor="middle" fill="#7b61ff" font-size="11">least-privilege egress</text>
+  <line x1="450" y1="481" x2="790" y2="481" stroke="#7b61ff" stroke-opacity="0.35" stroke-width="1"/>
+  <text x="454" y="500" text-anchor="start" fill="#444" font-size="11">RM_EMAIL_INT  (TYPE = EMAIL)</text>
+  <text x="454" y="518" text-anchor="start" fill="#444" font-size="11">RM_EGRESS_RULE  mail API + chart CDNs</text>
+  <text x="454" y="536" text-anchor="start" fill="#444" font-size="11">RM_MAIL_EAI  external access integration</text>
+  <text x="454" y="554" text-anchor="start" fill="#444" font-size="11">RM_MAIL_SECRET  provider JSON credentials</text>
+  <rect x="840" y="430" width="340" height="180" rx="10" fill="#edf9f0" stroke="#00a843" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="1010.0" y="454" text-anchor="middle" fill="#007a31" font-size="14" font-weight="bold">Directory lookups</text>
+  <text x="1010.0" y="471" text-anchor="middle" fill="#00a843" font-size="11">SNOWFLAKE.SECURITY_VIEWER</text>
+  <line x1="850" y1="481" x2="1170" y2="481" stroke="#00a843" stroke-opacity="0.35" stroke-width="1"/>
+  <text x="854" y="500" text-anchor="start" fill="#444" font-size="11">ACCOUNT_USAGE.USERS  (emails)</text>
+  <text x="854" y="518" text-anchor="start" fill="#444" font-size="11">GRANTS_TO_USERS / GRANTS_TO_ROLES</text>
+  <text x="854" y="536" text-anchor="start" fill="#444" font-size="11">Roles expanded recursively</text>
+  <text x="854" y="554" text-anchor="start" fill="#444" font-size="11">Latency up to 2 hours</text>
+  <path d="M1055,380 L1055,400 L230,400 L230,430" fill="none" stroke="#e8530e" stroke-width="2"/>
+  <polygon points="225,421 235,421 230,430" fill="#e8530e"/>
+  <rect x="536.0" y="392" width="208" height="17" rx="4" fill="#fff"/>
+  <text x="640" y="404" text-anchor="middle" fill="#b33f08" font-size="10.5">reads source / writes output</text>
+  <path d="M1120,380 L1120,430" fill="none" stroke="#e8530e" stroke-width="2"/>
+  <polygon points="1115,421 1125,421 1120,430" fill="#e8530e"/>
+  <rect x="60" y="690" width="340" height="170" rx="10" fill="#eaf7fc" stroke="#29b5e8" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="230.0" y="714" text-anchor="middle" fill="#0e7fad" font-size="14" font-weight="bold">Snowflake users</text>
+  <text x="230.0" y="731" text-anchor="middle" fill="#29b5e8" font-size="11">SYSTEM$SEND_EMAIL (verified emails)</text>
+  <line x1="70" y1="741" x2="390" y2="741" stroke="#29b5e8" stroke-opacity="0.35" stroke-width="1"/>
+  <text x="74" y="760" text-anchor="start" fill="#444" font-size="11">Button: open the artifact (live / snapshot)</text>
+  <text x="74" y="778" text-anchor="start" fill="#444" font-size="11">Images via 7-day presigned URLs</text>
+  <text x="74" y="796" text-anchor="start" fill="#444" font-size="11">PDF download link</text>
+  <text x="74" y="814" text-anchor="start" fill="#444" font-size="11">Or same provider email if channel = EXTERNAL</text>
+  <rect x="450" y="690" width="340" height="170" rx="10" fill="#fff3ed" stroke="#e8530e" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="620.0" y="714" text-anchor="middle" fill="#b33f08" font-size="14" font-weight="bold">External recipients</text>
+  <text x="620.0" y="731" text-anchor="middle" fill="#e8530e" font-size="11">SendGrid or Microsoft Graph</text>
+  <line x1="460" y1="741" x2="780" y2="741" stroke="#e8530e" stroke-opacity="0.35" stroke-width="1"/>
+  <text x="464" y="760" text-anchor="start" fill="#444" font-size="11">Charts as inline CID PNG images</text>
+  <text x="464" y="778" text-anchor="start" fill="#444" font-size="11">PDF attached (optional)</text>
+  <text x="464" y="796" text-anchor="start" fill="#444" font-size="11">Domain allowlist enforced twice</text>
+  <text x="464" y="814" text-anchor="start" fill="#444" font-size="11">No artifact link (needs Snowflake login)</text>
+  <rect x="840" y="690" width="340" height="170" rx="10" fill="#f3f0ff" stroke="#7b61ff" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="1010.0" y="714" text-anchor="middle" fill="#5a3ec8" font-size="14" font-weight="bold">Snowflake artifact</text>
+  <text x="1010.0" y="731" text-anchor="middle" fill="#7b61ff" font-size="11">Workspaces / CoCo publish</text>
+  <line x1="850" y1="741" x2="1170" y2="741" stroke="#7b61ff" stroke-opacity="0.35" stroke-width="1"/>
+  <text x="854" y="760" text-anchor="start" fill="#444" font-size="11">Report / File: static snapshot</text>
+  <text x="854" y="778" text-anchor="start" fill="#444" font-size="11">Dashboard: live data</text>
+  <text x="854" y="796" text-anchor="start" fill="#444" font-size="11">Shared to a role; same link on re-publish</text>
+  <text x="854" y="814" text-anchor="start" fill="#444" font-size="11">Publishing is manual (no SQL API yet)</text>
+  <path d="M1180,330 L1196,330 L1196,650 L230,650 L230,690" fill="none" stroke="#e8530e" stroke-width="2"/>
+  <polygon points="225,681 235,681 230,690" fill="#e8530e"/>
+  <rect x="373.0" y="642" width="54" height="17" rx="4" fill="#fff"/>
+  <text x="400" y="654" text-anchor="middle" fill="#b33f08" font-size="10.5">native</text>
+  <path d="M620,650 L620,690" fill="none" stroke="#e8530e" stroke-width="2"/>
+  <polygon points="615,681 625,681 620,690" fill="#e8530e"/>
+  <text x="675" y="676" text-anchor="middle" fill="#b33f08" font-size="10.5">provider API via EAI</text>
+  <path d="M1010,860 L1010,882 L230,882 L230,860" fill="none" stroke="#7b61ff" stroke-width="2" stroke-dasharray="5,3"/>
+  <polygon points="225,869 235,869 230,860" fill="#7b61ff"/>
+  <rect x="456.5" y="874" width="327" height="17" rx="4" fill="#fff"/>
+  <text x="620" y="886" text-anchor="middle" fill="#5a3ec8" font-size="10.5">artifact link inside the Snowflake-user email</text>
+</svg>

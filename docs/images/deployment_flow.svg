@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 820" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <filter id="sh"><feDropShadow dx="1" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.12"/></filter>
+  </defs>
+  <rect width="1000" height="820" fill="#ffffff"/>
+  <text x="500.0" y="40" text-anchor="middle" fill="#1a1a2e" font-size="24" font-weight="bold">Deployment Flow</text>
+  <text x="500.0" y="64" text-anchor="middle" fill="#666" font-size="13">Run in order · each step lists the script and the role that runs it</text>
+  <rect x="120" y="100" width="400" height="70" rx="10" fill="#29b5e8" filter="url(#sh)"/>
+  <text x="320.0" y="131.0" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Roles, warehouse, database, stages</text>
+  <text x="320.0" y="149.0" text-anchor="middle" fill="#f0f9ff" font-size="11">sql/01_roles_db.sql · ACCOUNTADMIN</text>
+  <circle cx="120" cy="100" r="13" fill="#fff" stroke="#29b5e8" stroke-width="2"/>
+  <text x="120" y="104.5" text-anchor="middle" fill="#29b5e8" font-size="12" font-weight="bold">1</text>
+  <path d="M520,135 L680,135 L680,200" fill="none" stroke="#29b5e8" stroke-width="2"/>
+  <polygon points="675,191 685,191 680,200" fill="#29b5e8"/>
+  <rect x="480" y="200" width="400" height="70" rx="10" fill="#7b61ff" filter="url(#sh)"/>
+  <text x="680.0" y="231.0" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Metadata tables + RUNS_STREAM</text>
+  <text x="680.0" y="249.0" text-anchor="middle" fill="#f0f9ff" font-size="11">sql/02_tables.sql · RM_ADMIN</text>
+  <circle cx="480" cy="200" r="13" fill="#fff" stroke="#7b61ff" stroke-width="2"/>
+  <text x="480" y="204.5" text-anchor="middle" fill="#7b61ff" font-size="12" font-weight="bold">2</text>
+  <path d="M480,235 L320,235 L320,300" fill="none" stroke="#7b61ff" stroke-width="2"/>
+  <polygon points="315,291 325,291 320,300" fill="#7b61ff"/>
+  <rect x="120" y="300" width="400" height="70" rx="10" fill="#7b61ff" filter="url(#sh)"/>
+  <text x="320.0" y="331.0" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Stored procedures</text>
+  <text x="320.0" y="349.0" text-anchor="middle" fill="#f0f9ff" font-size="11">sql/03_procedures.sql · RM_ADMIN</text>
+  <circle cx="120" cy="300" r="13" fill="#fff" stroke="#7b61ff" stroke-width="2"/>
+  <text x="120" y="304.5" text-anchor="middle" fill="#7b61ff" font-size="12" font-weight="bold">3</text>
+  <path d="M520,335 L680,335 L680,400" fill="none" stroke="#7b61ff" stroke-width="2"/>
+  <polygon points="675,391 685,391 680,400" fill="#7b61ff"/>
+  <rect x="480" y="400" width="400" height="70" rx="10" fill="#00a843" filter="url(#sh)"/>
+  <text x="680.0" y="431.0" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Email int., egress, secret, EAI, pool, tasks</text>
+  <text x="680.0" y="449.0" text-anchor="middle" fill="#f0f9ff" font-size="11">sql/04_integrations.sql · ACCOUNTADMIN → RM_ADMIN</text>
+  <circle cx="480" cy="400" r="13" fill="#fff" stroke="#00a843" stroke-width="2"/>
+  <text x="480" y="404.5" text-anchor="middle" fill="#00a843" font-size="12" font-weight="bold">4</text>
+  <path d="M480,435 L320,435 L320,500" fill="none" stroke="#00a843" stroke-width="2"/>
+  <polygon points="315,491 325,491 320,500" fill="#00a843"/>
+  <rect x="120" y="500" width="400" height="70" rx="10" fill="#e8530e" filter="url(#sh)"/>
+  <text x="320.0" y="531.0" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Build + push renderer image (linux/amd64)</text>
+  <text x="320.0" y="549.0" text-anchor="middle" fill="#f0f9ff" font-size="11">scripts/build_push.sh · Docker + snow CLI</text>
+  <circle cx="120" cy="500" r="13" fill="#fff" stroke="#e8530e" stroke-width="2"/>
+  <text x="120" y="504.5" text-anchor="middle" fill="#e8530e" font-size="12" font-weight="bold">5</text>
+  <path d="M520,535 L680,535 L680,600" fill="none" stroke="#e8530e" stroke-width="2"/>
+  <polygon points="675,591 685,591 680,600" fill="#e8530e"/>
+  <rect x="480" y="600" width="400" height="70" rx="10" fill="#29b5e8" filter="url(#sh)"/>
+  <text x="680.0" y="631.0" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Upload spec + Streamlit, create app</text>
+  <text x="680.0" y="649.0" text-anchor="middle" fill="#f0f9ff" font-size="11">sql/05_spcs_and_app.sql · snow sql -f</text>
+  <circle cx="480" cy="600" r="13" fill="#fff" stroke="#29b5e8" stroke-width="2"/>
+  <text x="480" y="604.5" text-anchor="middle" fill="#29b5e8" font-size="12" font-weight="bold">6</text>
+  <path d="M480,635 L320,635 L320,700" fill="none" stroke="#29b5e8" stroke-width="2"/>
+  <polygon points="315,691 325,691 320,700" fill="#29b5e8"/>
+  <rect x="120" y="700" width="400" height="70" rx="10" fill="#00a843" filter="url(#sh)"/>
+  <text x="320.0" y="731.0" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">Set secret, domains, admins; smoke test</text>
+  <text x="320.0" y="749.0" text-anchor="middle" fill="#f0f9ff" font-size="11">docs/DEPLOYMENT.md §8 · RM_ADMIN</text>
+  <circle cx="120" cy="700" r="13" fill="#fff" stroke="#00a843" stroke-width="2"/>
+  <text x="120" y="704.5" text-anchor="middle" fill="#00a843" font-size="12" font-weight="bold">7</text>
+</svg>

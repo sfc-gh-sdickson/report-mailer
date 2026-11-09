@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Weekly Sales Performance</title>
+<!-- Chart libraries load from CDNs. These hosts must be in RM_RENDER_ALLOWED_HOSTS
+     and in the RM_EGRESS_RULE network rule for the renderer to fetch them. -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+  body { font-family: Arial, Helvetica, sans-serif; margin: 0; background: #ffffff; color: #1a1a2e; }
+  header { background: linear-gradient(90deg, #29B5E8, #1B3A6B); color: #fff; padding: 22px 32px; }
+  header h1 { margin: 0; font-size: 24px; }
+  header p { margin: 6px 0 0; color: #d6efff; font-size: 13px; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 24px 32px 8px; }
+  .kpi { border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,.06); }
+  .kpi .label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: .06em; }
+  .kpi .value { font-size: 28px; font-weight: bold; margin-top: 6px; }
+  .kpi .delta.up { color: #00a843; } .kpi .delta.down { color: #e8530e; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px 32px; }
+  .card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,.06); }
+  .card h2 { font-size: 15px; margin: 0 0 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 8px; border-bottom: 1px solid #edf2f7; }
+  th { background: #f8fafc; color: #475569; }
+  footer { padding: 12px 32px 24px; font-size: 11px; color: #94a3b8; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Weekly Sales Performance</h1>
+  <p>Week ending 2026-11-08 · Source: SALES.ANALYTICS.WEEKLY_REVENUE (sample data)</p>
+</header>
+
+<section class="kpis">
+  <div class="kpi"><div class="label">Revenue</div><div class="value">$4.82M</div><div class="delta up">▲ 6.4% WoW</div></div>
+  <div class="kpi"><div class="label">Orders</div><div class="value">18,240</div><div class="delta up">▲ 3.1% WoW</div></div>
+  <div class="kpi"><div class="label">Avg Order Value</div><div class="value">$264</div><div class="delta up">▲ 3.2% WoW</div></div>
+  <div class="kpi"><div class="label">Return Rate</div><div class="value">4.7%</div><div class="delta down">▲ 0.4 pts WoW</div></div>
+</section>
+
+<section class="grid">
+  <div class="card"><h2>Revenue by Week (Chart.js, canvas)</h2><canvas id="trend" height="220"></canvas></div>
+  <div class="card"><h2>Revenue by Region (Chart.js, canvas)</h2><canvas id="region" height="220"></canvas></div>
+  <div class="card"><h2>Category Mix (Plotly, SVG)</h2><div id="mix" style="height:300px"></div></div>
+  <div class="card"><h2>Top Products</h2>
+    <table>
+      <thead><tr><th>Product</th><th>Revenue</th><th>Units</th><th>WoW</th></tr></thead>
+      <tbody>
+        <tr><td>Snow Parka Pro</td><td>$612K</td><td>2,041</td><td>+9.8%</td></tr>
+        <tr><td>Glacier Boots</td><td>$488K</td><td>3,254</td><td>+4.1%</td></tr>
+        <tr><td>Summit Pack 40L</td><td>$402K</td><td>2,680</td><td>+2.6%</td></tr>
+        <tr><td>Alpine Gloves</td><td>$214K</td><td>7,133</td><td>-1.2%</td></tr>
+        <tr><td>Thermal Base Layer</td><td>$198K</td><td>4,950</td><td>+0.7%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<footer>Generated for demonstration of Snowflake Report Mailer. All numbers are synthetic.</footer>
+
+<script>
+  // Deterministic readiness signal for the renderer (optional but recommended).
+  window.REPORT_READY = false;
+  const weeks = ['Sep 20','Sep 27','Oct 4','Oct 11','Oct 18','Oct 25','Nov 1','Nov 8'];
+  new Chart(document.getElementById('trend'), {
+    type: 'line',
+    data: { labels: weeks, datasets: [
+      { label: 'Revenue ($M)', data: [3.9,4.1,4.0,4.3,4.4,4.2,4.53,4.82], borderColor: '#29B5E8',
+        backgroundColor: 'rgba(41,181,232,.15)', fill: true, tension: .3 },
+      { label: 'Target ($M)', data: [4.0,4.0,4.1,4.1,4.2,4.2,4.3,4.3], borderColor: '#1B3A6B', borderDash: [6,4] } ] },
+    options: { plugins: { legend: { position: 'bottom' } } }
+  });
+  new Chart(document.getElementById('region'), {
+    type: 'bar',
+    data: { labels: ['West','Central','East','EMEA','APAC'], datasets: [
+      { label: 'This week', data: [1.42,0.96,1.18,0.81,0.45], backgroundColor: '#29B5E8' },
+      { label: 'Last week', data: [1.31,0.93,1.12,0.77,0.40], backgroundColor: '#B3E5FC' } ] },
+    options: { plugins: { legend: { position: 'bottom' } } }
+  });
+  Plotly.newPlot('mix', [{ type: 'pie', hole: .5, labels: ['Outerwear','Footwear','Packs','Accessories','Base layers'],
+    values: [38,24,17,12,9], marker: { colors: ['#29B5E8','#1B3A6B','#00a843','#7b61ff','#e8530e'] } }],
+    { margin: { t: 10, b: 10, l: 10, r: 10 }, showlegend: true }, { staticPlot: true, displayModeBar: false })
+    .then(() => { window.REPORT_READY = true; });
+</script>
+</body>
+</html>

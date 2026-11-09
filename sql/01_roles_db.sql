@@ -1,0 +1,46 @@
+-- =====================================================================
+-- Report Mailer - 01: roles, warehouse, database, stages
+-- Run as: ACCOUNTADMIN (or SECURITYADMIN + SYSADMIN equivalents)
+-- =====================================================================
+USE ROLE ACCOUNTADMIN;
+
+CREATE ROLE IF NOT EXISTS RM_ADMIN COMMENT = 'Owns every Report Mailer object; tasks and jobs run as this role';
+CREATE ROLE IF NOT EXISTS RM_USER  COMMENT = 'May open the Report Mailer Streamlit app';
+GRANT ROLE RM_USER  TO ROLE RM_ADMIN;
+GRANT ROLE RM_ADMIN TO ROLE SYSADMIN;
+
+-- Account-level privileges the app needs.
+GRANT CREATE DATABASE        ON ACCOUNT TO ROLE RM_ADMIN;
+GRANT CREATE WAREHOUSE       ON ACCOUNT TO ROLE RM_ADMIN;
+GRANT CREATE COMPUTE POOL    ON ACCOUNT TO ROLE RM_ADMIN;
+GRANT CREATE INTEGRATION     ON ACCOUNT TO ROLE RM_ADMIN;  -- notification + external access integrations
+GRANT EXECUTE TASK           ON ACCOUNT TO ROLE RM_ADMIN;  -- run scheduled / triggered tasks
+GRANT BIND SERVICE ENDPOINT  ON ACCOUNT TO ROLE RM_ADMIN;  -- harmless for jobs; required if a service endpoint is ever added
+-- Read user e-mails and role membership (ACCOUNT_USAGE.USERS / GRANTS_TO_USERS / GRANTS_TO_ROLES).
+GRANT DATABASE ROLE SNOWFLAKE.SECURITY_VIEWER TO ROLE RM_ADMIN;
+
+USE ROLE RM_ADMIN;
+
+CREATE WAREHOUSE IF NOT EXISTS RM_WH
+  WAREHOUSE_SIZE = XSMALL AUTO_SUSPEND = 60 AUTO_RESUME = TRUE INITIALLY_SUSPENDED = TRUE
+  COMMENT = 'Report Mailer metadata queries, tasks, Streamlit';
+
+CREATE DATABASE IF NOT EXISTS REPORT_MAILER;
+CREATE SCHEMA   IF NOT EXISTS REPORT_MAILER.APP;
+USE SCHEMA REPORT_MAILER.APP;
+
+-- SNOWFLAKE_SSE is required for GET_PRESIGNED_URL images and for stage volumes on Azure.
+CREATE STAGE IF NOT EXISTS REPORT_SOURCES ENCRYPTION = (TYPE = 'SNOWFLAKE_SSE') DIRECTORY = (ENABLE = TRUE)
+  COMMENT = 'Source HTML/PDF reports (system of record). One folder per report.';
+CREATE STAGE IF NOT EXISTS REPORT_OUTPUTS ENCRYPTION = (TYPE = 'SNOWFLAKE_SSE') DIRECTORY = (ENABLE = TRUE)
+  COMMENT = 'Rendered PNG slices and PDFs, one folder per run id';
+CREATE STAGE IF NOT EXISTS RM_SPECS       ENCRYPTION = (TYPE = 'SNOWFLAKE_SSE')
+  COMMENT = 'SPCS job specification templates';
+CREATE STAGE IF NOT EXISTS RM_APP_CODE    ENCRYPTION = (TYPE = 'SNOWFLAKE_SSE')
+  COMMENT = 'Streamlit source';
+
+CREATE IMAGE REPOSITORY IF NOT EXISTS RM_IMAGES;
+
+GRANT USAGE ON WAREHOUSE RM_WH         TO ROLE RM_USER;
+GRANT USAGE ON DATABASE REPORT_MAILER  TO ROLE RM_USER;
+GRANT USAGE ON SCHEMA REPORT_MAILER.APP TO ROLE RM_USER;

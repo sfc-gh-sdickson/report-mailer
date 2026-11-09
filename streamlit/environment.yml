@@ -1,0 +1,5 @@
+name: report_mailer
+channels:
+  - snowflake
+dependencies:
+  - snowflake-snowpark-python

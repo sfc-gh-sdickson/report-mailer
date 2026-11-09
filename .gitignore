@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+out/
+.env
+.env.local
+*.pem
+credentials.json
+.idea/
+.vscode/
+.DS_Store
+.snowflake/
+.streamlit/secrets.toml

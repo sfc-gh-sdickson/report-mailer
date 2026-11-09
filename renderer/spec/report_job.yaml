@@ -1,0 +1,51 @@
+# Snowpark Container Services JOB specification template for one report run.
+# Uploaded to @REPORT_MAILER.APP.RM_SPECS by sql/05_spcs.sql and launched by
+# REPORT_MAILER.APP.LAUNCH_QUEUED_RUNS() with:
+#   EXECUTE JOB SERVICE ... FROM @RM_SPECS SPECIFICATION_TEMPLATE_FILE='report_job.yaml'
+#     USING (run_id => 'R<32 hex chars>')
+# Template variables use the documented {{ name }} syntax. The image tag is written
+# into this file by scripts/deploy.sh (IMAGE_TAG) before upload, so keep it literal.
+spec:
+  containers:
+  - name: renderer
+    image: /report_mailer/app/rm_images/report-renderer:1.0.0
+    env:
+      RUN_ID: {{ run_id }}
+      RM_WAREHOUSE: RM_WH
+      RM_MAIL_PROVIDER: SENDGRID              # SENDGRID | MS_GRAPH
+      RM_NATIVE_EMAIL_INTEGRATION: RM_EMAIL_INT
+      RM_OUTPUTS_STAGE: "@REPORT_MAILER.APP.REPORT_OUTPUTS"
+      # Hosts the headless browser may load chart libraries/fonts from. Each one must
+      # also be listed in network rule REPORT_MAILER.APP.RM_EGRESS_RULE (sql/04).
+      RM_RENDER_ALLOWED_HOSTS: "cdn.jsdelivr.net,cdnjs.cloudflare.com,unpkg.com,cdn.plot.ly,fonts.googleapis.com,fonts.gstatic.com"
+    secrets:
+    - snowflakeSecret:
+        objectName: REPORT_MAILER.APP.RM_MAIL_SECRET
+      secretKeyRef: secret_string
+      envVarName: MAIL_PROVIDER_CREDENTIALS
+    volumeMounts:
+    - name: report-sources
+      mountPath: /mnt/reports
+    - name: report-outputs
+      mountPath: /mnt/outputs
+    - name: dshm                               # Chromium needs a writable /dev/shm
+      mountPath: /dev/shm
+    resources:
+      requests:
+        cpu: 1
+        memory: 2Gi
+      limits:
+        cpu: 2
+        memory: 6Gi
+  volumes:
+  - name: report-sources                     # job only reads from this mount
+    source: stage
+    stageConfig:
+      name: "@REPORT_MAILER.APP.REPORT_SOURCES"
+  - name: report-outputs                     # job writes whole files here (no appends)
+    source: stage
+    stageConfig:
+      name: "@REPORT_MAILER.APP.REPORT_OUTPUTS"
+  - name: dshm
+    source: memory
+    size: 1Gi

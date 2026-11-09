@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Report Mailer — Architecture</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: linear-gradient(135deg, #0A1628 0%, #1B3A6B 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 28px;
+  font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+}
+.card {
+  background: #fff;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 1440px;
+  box-shadow: 0 28px 72px rgba(0,0,0,0.45);
+}
+.hdr {
+  background: linear-gradient(90deg, #29B5E8 0%, #1B3A6B 100%);
+  padding: 22px 32px;
+  border-radius: 18px 18px 0 0;
+}
+.hdr h1 { color: #fff; font-size: 20px; font-weight: 800; }
+.hdr p  { color: #A8D8F0; font-size: 12px; margin-top: 5px; }
+.canvas { padding: 28px 28px 16px; }
+
+/* Top-level flex: [side] [conn] [platform] [conn] [side] */
+.arch { display: flex; align-items: stretch; gap: 0; }
+
+/* Side columns (sources / consumers) */
+.side-col { width: 190px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; }
+.col-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: #64748B; text-align: center; padding-bottom: 6px;
+  border-bottom: 1px solid #E2E8F0; margin-bottom: 2px;
+}
+
+/* Component box: title + 1-line description */
+.cbox {
+  border-radius: 10px; padding: 11px 13px;
+  display: flex; flex-direction: column; gap: 4px;
+  min-height: 66px; justify-content: center;
+}
+.ct { overflow-wrap: anywhere; font-size: 12px; font-weight: 700; color: #fff; line-height: 1.25; }
+.cd { font-size: 10px; color: rgba(255,255,255,0.78); line-height: 1.4; }
+
+/* Color variants */
+.c-blue   { background: #29B5E8; }
+.c-navy   { background: #1B3A6B; }
+.c-bronze { background: #C07A30; }
+.c-silver { background: #607D8B; }
+.c-gold   { background: #C8960A; }
+.c-purple { background: #6B3FA0; }
+.c-green  { background: #1B6B3B; }
+.c-slate  { background: #475569; }
+
+/* SVG connector arrows */
+.conn { width: 56px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
+
+/* Snowflake platform container */
+.sf { flex: 1; min-width: 0; border: 2px solid #29B5E8; border-radius: 14px; background: #F0F9FF; overflow: hidden; display: flex; flex-direction: column; }
+.sf-badge { background: linear-gradient(90deg, #29B5E8, #1B3A6B); padding: 8px 18px; display: flex; align-items: baseline; gap: 10px; }
+.sf-name { color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; }
+.sf-sub  { color: #A8D8F0; font-size: 10px; }
+
+/* Snowflake internal: sections with arrows between */
+.sf-body { display: flex; align-items: stretch; padding: 14px 12px; gap: 0; flex: 1; }
+.sf-sec { flex: 1; min-width: 170px; background: #fff; border-radius: 10px; border: 1px solid #CBD5E1; padding: 10px 9px; display: flex; flex-direction: column; }
+.sf-sec-lbl { font-size: 8.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #64748B; text-align: center; padding-bottom: 6px; border-bottom: 1px solid #E2E8F0; margin-bottom: 8px; }
+.sf-boxes { display: flex; flex-direction: column; gap: 8px; }
+
+/* Downward chain arrow within a section (for sequential flows like Bronze→Silver→Gold) */
+.chain { display: flex; justify-content: center; padding: 1px 0; }
+
+/* Arrow between SF sections */
+.sf-sep { width: 36px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+
+/* Governance bar */
+.gov { background: #1B3A6B; margin: 10px 28px 0; border-radius: 8px; padding: 7px 16px; text-align: center; font-size: 11px; color: rgba(200,220,255,0.9); letter-spacing: 0.04em; font-weight: 500; }
+.footer { text-align: center; padding: 9px; font-size: 10px; color: #94A3B8; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="hdr">
+    <h1>Report Mailer — Architecture</h1>
+    <p>Schedule HTML, PDF and artifact reports from Snowsight · charts rendered headlessly in SPCS · native email for Snowflake users, SendGrid / Microsoft Graph for everyone else</p>
+  </div>
+
+  <div class="canvas">
+    <div class="arch">
+
+      <!-- LEFT: External Sources -->
+      <div class="side-col">
+        <div class="col-label">Report sources</div><div class="cbox c-blue"><div class="ct">HTML reports</div><div class="cd">Chart.js · Plotly · ECharts · D3</div></div><div class="cbox c-blue"><div class="ct">PDF reports</div><div class="cd">Rasterized page by page</div></div><div class="cbox c-blue"><div class="ct">Snowflake artifacts</div><div class="cd">Report / Dashboard links (Workspaces, CoCo)</div></div><div class="cbox c-blue"><div class="ct">Refresh procedures</div><div class="cd">Optional CALL before each render</div></div>
+      </div>
+
+      <!-- LEFT CONNECTOR ARROW -->
+      <div class="conn">
+        <svg width="48" height="14" style="display:block;overflow:visible">
+          <line x1="0" y1="7" x2="40" y2="7" stroke="#94A3B8" stroke-width="2"/>
+          <polygon points="40,3 48,7 40,11" fill="#94A3B8"/>
+        </svg>
+      </div>
+
+      <!-- SNOWFLAKE PLATFORM -->
+      <div class="sf">
+        <div class="sf-badge">
+          <span class="sf-name">SNOWFLAKE DATA CLOUD</span>
+          <span class="sf-sub">REPORT_MAILER.APP · build spec (not yet deployed)</span>
+        </div>
+        <div class="sf-body"><div class="sf-sec"><div class="sf-sec-lbl">① Author &amp; schedule</div><div class="sf-boxes"><div class="cbox c-navy"><div class="ct">Streamlit app</div><div class="cd">Register reports, schedules, recipients</div></div><div class="cbox c-green"><div class="ct">Schedule tasks</div><div class="cd">CRON + IANA time zone per schedule</div></div><div class="cbox c-bronze"><div class="ct">RUNS + RUNS_STREAM</div><div class="cd">Queue; owner's rights only enqueue</div></div></div></div><div class="sf-sep"><svg width="28" height="16" style="overflow:visible"><line x1="0" y1="8" x2="20" y2="8" stroke="#94A3B8" stroke-width="1.8"/><polygon points="20,4 28,8 20,12" fill="#94A3B8"/></svg></div><div class="sf-sec"><div class="sf-sec-lbl">② Dispatch</div><div class="sf-boxes"><div class="cbox c-green"><div class="ct">RM_DISPATCHER_TASK</div><div class="cd">Triggered when the stream has rows</div></div><div class="chain"><svg width="16" height="14" viewBox="0 0 16 14" style="overflow:visible"><line x1="8" y1="0" x2="8" y2="8" stroke="#CBD5E1" stroke-width="1.5"/><polygon points="4,8 12,8 8,14" fill="#CBD5E1"/></svg></div><div class="cbox c-green"><div class="ct">LAUNCH_QUEUED_RUNS()</div><div class="cd">EXECUTE JOB SERVICE … ASYNC</div></div><div class="cbox c-slate"><div class="ct">RECONCILE_RUNS()</div><div class="cd">Every 15 min, fails stuck runs</div></div></div></div><div class="sf-sep"><svg width="28" height="16" style="overflow:visible"><line x1="0" y1="8" x2="20" y2="8" stroke="#94A3B8" stroke-width="1.8"/><polygon points="20,4 28,8 20,12" fill="#94A3B8"/></svg></div><div class="sf-sec"><div class="sf-sec-lbl">③ Render (SPCS job)</div><div class="sf-boxes"><div class="cbox c-purple"><div class="ct">Headless Chromium</div><div class="cd">Waits for REPORT_READY / DOM quiet</div></div><div class="chain"><svg width="16" height="14" viewBox="0 0 16 14" style="overflow:visible"><line x1="8" y1="0" x2="8" y2="8" stroke="#CBD5E1" stroke-width="1.5"/><polygon points="4,8 12,8 8,14" fill="#CBD5E1"/></svg></div><div class="cbox c-purple"><div class="ct">PNG slices + PDF</div><div class="cd">Written to @REPORT_OUTPUTS/&lt;run&gt;</div></div><div class="chain"><svg width="16" height="14" viewBox="0 0 16 14" style="overflow:visible"><line x1="8" y1="0" x2="8" y2="8" stroke="#CBD5E1" stroke-width="1.5"/><polygon points="4,8 12,8 8,14" fill="#CBD5E1"/></svg></div><div class="cbox c-purple"><div class="ct">Recipient resolution</div><div class="cd">ACCOUNT_USAGE users + role members</div></div></div></div><div class="sf-sep"><svg width="28" height="16" style="overflow:visible"><line x1="0" y1="8" x2="20" y2="8" stroke="#94A3B8" stroke-width="1.8"/><polygon points="20,4 28,8 20,12" fill="#94A3B8"/></svg></div><div class="sf-sec"><div class="sf-sec-lbl">④ Deliver</div><div class="sf-boxes"><div class="cbox c-gold"><div class="ct">SYSTEM$SEND_EMAIL</div><div class="cd">Snowflake users · artifact button</div></div><div class="cbox c-gold"><div class="ct">SendGrid / MS Graph</div><div class="cd">External · inline CID images + PDF</div></div><div class="cbox c-silver"><div class="ct">DELIVERY_LOG</div><div class="cd">Per-recipient status and IDs</div></div></div></div></div><!-- /.sf-body -->
+      </div><!-- /.sf -->
+
+      <!-- RIGHT CONNECTOR ARROW -->
+      <div class="conn">
+        <svg width="48" height="14" style="display:block;overflow:visible">
+          <line x1="0" y1="7" x2="40" y2="7" stroke="#94A3B8" stroke-width="2"/>
+          <polygon points="40,3 48,7 40,11" fill="#94A3B8"/>
+        </svg>
+      </div>
+
+      <!-- RIGHT: Consumer Outputs -->
+      <div class="side-col">
+        <div class="col-label">Recipients &amp; outputs</div><div class="cbox c-navy"><div class="ct">Snowflake users</div><div class="cd">Email + link to live artifact</div></div><div class="cbox c-navy"><div class="ct">External recipients</div><div class="cd">Allow-listed domains only</div></div><div class="cbox c-navy"><div class="ct">Run history</div><div class="cd">Streamlit Run history tab</div></div>
+      </div>
+
+    </div><!-- /.arch -->
+  </div><!-- /.canvas -->
+
+  <div class="gov">Designed controls (not yet deployed): RM_ADMIN / RM_USER roles · egress limited by RM_EGRESS_RULE · provider credentials in RM_MAIL_SECRET · domain allowlist + recipient cap · artifact links only to Snowflake users · DELIVERY_LOG audit</div>
+  <div class="footer">Generated by Snowflake Cortex Code · Report Mailer build spec</div>
+</div>
+</body>
+</html>
